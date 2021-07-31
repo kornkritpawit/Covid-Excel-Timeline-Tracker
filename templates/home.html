@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{url_for('static', filename='home.css')}}">
+
+{% endblock %}
+
+{% block content %}
+
+<section class="upload-bg">
+  <div class="upload">
+    <h2 class="pb-1">New customer timeline</h2>
+    <form id="formupload" method="POST" enctype="multipart/form-data">
+      <div class="form">
+        <input onchange="javascript:filehandler()" id="formFile" name="excel_file" type="file" required accept=".xlsx" multiple>
+        <ul class="filelist" id="filelist">
+        </ul>
+        <div id="upload-label" class="upload-label">
+          <i style="font-size: 2em;" class="fas fa-cloud-upload-alt"></i> ลากไฟล์ excel ลงมา หรือ 
+          <button class="btn btn-light border choose-file">เลือกไฟล์</button>
+        </div>
+      </div>
+      <div>
+        <button class="btn btn-primary mx-1" onclick="return uploadfile('upload')">อัพโหลด</button>
+        <button class="btn btn-success mx-1" onclick="return uploadfile('uploadcheck')">อัพโหลด และ ตรวจสอบ</button>
+        <input class="btn btn-warning mx-1" onclick="clearFile()" type="button" value="ล้างไฟล์">
+      </div>
+    </form>
+  </div>
+</section>
+<hr class="sep mx-auto">
+<section>
+  <div class="check-section">
+    <h2 class="pb-1">Current available customer timeline</h2>
+    <p>เลือกไฟล์ และ กดปุ่มตรวจสอบ เพื่อทำการตรวจสอบไทม์ไลน์</p>
+    <div class="input-group mb-3 w-50 mx-auto search">
+      <input oninput="searchfile(this)" type="search" id="searchfile" class="form-control" placeholder="ค้นหาชื่อไฟล์" aria-label="ค้นหาชื่อไฟล์" aria-describedby="button-addon2">
+      <button onclick="searchfile(this)" class="btn btn-outline-secondary" type="reset" id="button-addon2"><i class="fas fa-search"></i></button>
+    </div>
+    <!-- <input id="searchfile" type="search"> -->
+      <form id="formcheck">
+        <div class="check-available">
+        {% for f in file%}
+        <div class="file-container">
+          <div>
+            <input type="checkbox" value="{{f}}" name="checkfile">
+            <label for="">{{f}}</label>
+          </div>
+          <div class="mb-1">
+            <a class="btn btn-primary" href="/excel/{{f}}">ดาวน์โหลด</a>
+            <button class="btn btn-danger" onclick='return deleteFile(event,{{ f|tojson }});'>ลบ</button>
+          </div>
+        </div>
+        {% endfor %}
+        </div>
+        <div class="my-3 w-75 mx-auto d-flex justify-content-center">
+          <div class="mx-2">
+            <input class="btn btn-success" id="checkbutton" type="submit" value="ตรวจสอบ">
+          </div>
+          <div class="mx-2">
+            <input class="btn btn-warning" type="reset"/>
+          </div>
+        </div>
+      </form>
+  </div>
+</section>
+
+<script>
+    var uploadform = document.querySelector('#formupload')
+
+    function filehandler() {
+      let {files} = document.getElementById('formFile')
+      let filelist = document.getElementById('filelist')
+      // $('#filelist > li').remove()
+      $('#filelist').empty()
+      if (files) {
+        console.log(files.item)
+        let uploadlabel = document.getElementById("upload-label")
+        console.log(uploadlabel)
+        for (let i = 0; i< files.length; ++i){
+        let li = document.createElement("li")
+        li.appendChild(document.createTextNode(files.item(i).name))
+        filelist.appendChild(li)
+        }
+        uploadlabel.style.display = "none"
+      }
+    }
+
+    function clearFile() {
+      let filelist = document.getElementById('filelist')
+      let uploadlabel = document.getElementById("upload-label")
+      let uploadform = document.getElementById('formupload')
+      while (filelist.firstChild) {
+        filelist.removeChild(filelist.firstChild);
+      }
+      uploadlabel.style.display = "block"
+      uploadform.reset()
+    }
+
+    function uploadfile(check='') {
+      // console.log('press')
+      let files = document.getElementById('formFile').files
+      if (files.length === 0 ) {
+        alert("กรุณาเลือก ไฟล์ไทม์ไลน์ลูกค้า")
+        return false
+      } 
+      uploadform.action = check
+      if (check === 'uploadcheck') {
+        uploadform.target = '_blank'
+      }
+      uploadform.submit()
+    }
+
+    function uploadChoice(event) {
+      console.log(event)
+      return false
+    }
+
+    function uploadcheck() {
+      uploadform.action = '/uploadcheck'
+      uploadform.method = 'POST'
+      uploadform.target = '_blank'
+      uploadform.submit()
+    }
+
+    function searchfile(elem){
+      // console.log(elem.value)
+      let search = elem.value
+      let formfile = document.getElementById("formcheck")
+      let checks = formfile.checkfile
+      checks.forEach((e) => {
+        let text = e.nextElementSibling.innerText
+        let filename = text.substring(11,text.length-5)
+        if(!e.checked) {  
+          if (!filename.includes(search) && !search.includes(" ")) {
+            e.parentNode.parentNode.style.display="none"
+          } else {
+            e.parentNode.parentNode.style.display="flex"
+          }
+        }
+      })
+    }
+
+  $(document).ready(function () {
+
+    $('#checkbutton').click(function(event) {
+      let checks = this.form.checkfile
+      let haveCheck = 0
+      checks.forEach((c)=> {
+        if (c.checked) {
+          haveCheck+=1
+        }
+      })
+      if (haveCheck) {
+        const form1 = new FormData(document.querySelector('#formcheck'))
+        console.log(form1)
+        form = document.forms['formcheck']
+        form.target = '_blank'
+        form.action = '/check'
+        form.method = 'post'
+        form.submit()
+      } 
+      else {
+        alert('กรุณาเลือกไฟล์ที่ต้องการทำการตรวจสอบ')
+        return false
+      }
+    })
+  });
+
+  function deleteFile(e, file) {
+    let accept = confirm(`ต้องการลบ ไฟล์ ${file}`)
+    if (accept) {
+      e.preventDefault()
+    $.ajax(`/delete/${file}`, {
+        type: 'DELETE',
+        data: null,
+        success: (data)=>{
+          console.log(data)
+          window.location.reload()
+        }
+      })
+    } else {
+      return false
+    }
+
+
+  }
+  // console.log({{day | tojson }})
+  // console.log(window.navigator)
+</script>
+
+{% endblock %}

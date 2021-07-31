@@ -1,0 +1,13 @@
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
+
+xlrd
+pandas==1.2.4
+numpy
+openpyxl
+pythainlp
+langdetect
+
+flask
+python-dotenv

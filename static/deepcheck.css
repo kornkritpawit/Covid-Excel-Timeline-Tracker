@@ -1,0 +1,59 @@
+
+
+.result-container {
+    margin: 8% 6%;
+    margin-bottom: 2%;
+    border-radius: 1rem;
+    background-color: #FDFDF2;
+    padding: 2%;
+    text-align: center;
+}
+
+.check-bg {
+    background-color: #FAF8DE;
+}
+
+.risk-info-container {
+    /* width: 100%; */
+    background-color: #FFF5F7;
+    padding: 1rem;
+    /* margin: 0 auto; */
+    border-radius: 1rem;
+}
+
+.risk-container-1 {
+    /* width: 90%; */
+    padding: 1.5rem;
+    text-align: left;
+    border-radius: 1rem;
+}
+
+.customer-color-1 {
+    background-color: #FFE5F7;
+}
+
+.risk-container-2 {
+    border-radius: 1rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+.customer-color-2 {
+    background-color: #FFCFE5;
+}
+
+.gsheet-color-1 {
+    background-color: #F4EDFF;
+}
+.gsheet-color-2 {
+    background-color: #EDDEFD;
+}
+
+.table-bg {
+    background-color: #E6C8FD;
+    border-radius: 0.75rem;
+}
+
+
+div.risk-day-container:last-child {
+    margin-bottom: 0;
+}

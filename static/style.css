@@ -1,0 +1,75 @@
+/* @import "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css"; */
+/* @import url("https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"); */
+* {
+    /* color: whitesmoke; */
+    /* font-family: Times; */
+    margin-bottom: 0;
+}
+
+body {
+    background-color: #343434;
+}
+
+.Nav {
+    display: flex;
+    background-color: black;
+    color: whitesmoke;
+    justify-content: space-between;
+    padding: 1%;
+    align-items: flex-start;
+    text-align: center;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.true-brand {
+    /* width: 70%; */
+    /* width: 15%; */
+    width: 8%;
+    margin-right: 25%;
+}
+
+.brand-img {
+    /* width: 10%; */
+    /* width:auto */
+}
+
+.item{
+    width: 40%;
+}
+
+.fsd {
+    /* height:20%; */
+    /* vertical-align: center; */
+    /* background-color: rgb(127, 127, 127); */
+}
+.header {
+    margin-bottom: 0;
+    display: flex;
+    align-items: flex-start;
+    /* display: inline;
+    float: left; */
+    /* margin: 0 auto; */
+    /* text-align: center; */
+}
+
+.content {
+    padding: 7% 0;
+}
+
+.project-name {
+    font-size: 1.8rem;
+    /* font-size: 2vw; */
+    /* font-family: "Sofia", sans-serif; */
+    /* padding-left: 0.2em; */
+}
+
+.footer {
+    text-align: center;
+    color: whitesmoke;
+    padding: 2rem;
+    padding-top: 0;
+}

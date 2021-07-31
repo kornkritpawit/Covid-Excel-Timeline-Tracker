@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Check{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{url_for('static', filename='checkpage.css')}}">
+{% endblock %}
+
+{% block content %}
+<div class="check-container">
+    <h2 class="mb-3">ผลการตรวจสอบ</h2>
+    {% for file in result %}
+        <div class="check-bg">
+            {% for p in file %}
+            <div>
+                {% if loop.index == 1 %}
+                <h5>ไฟล์ {{ p[0] }} <a class="btn btn-primary p-1 ms-4" href="/excel/{{p[0]}}">ดาวน์โหลด</a></h5>
+                {% endif %}
+                <div class="customer-container {% if p[3]%}customer-danger{% else %}customer-ok{% endif %}">
+                    <div class="customer">
+                        <p class="fw-bold text-center">{{loop.index}}. {{ p[1] }}</p>
+                        <div class="status">
+                        {% if p[2]==1 %}
+                            <p>เขียน Timeline ถูกต้อง <i class="fas fa-check-square correct"></i></p>
+                        {% else %}
+                            <div class="tl-status"><p>เขียน Timeline ผิดปกติ <i class="fas fa-times-circle wrong"></i></p>
+                                {% if p[2]==2 %}
+                                    <p class="reason">ข้อมูลเขต อาจมีความผิดปกติ</p>
+                                {% else %}
+                                    <p class="reason">ไทม์ไลน์น้อยกว่า 10 วัน <br>วันที่อาจมีความผิดปกติ</p>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        {% if p[3] %}
+                            <p>เข้าใกล้ พื้นที่เสี่ยง <i class="fas fa-exclamation-circle danger"></i></p>
+                        {% else %}
+                            <p>ปลอดภัย <i class="fas fa-thumbs-up safe"></i></p>
+                        {% endif %}
+                        </div>
+                        {% if p[3] %}
+                        <div class="info-button">
+                            <a class="btn btn-warning" target="_blank" href="/check/{{p[0]}}-{{loop.index - 1}}">ดูรายละเอียดเพิ่มเติม</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
+    <script>
+    </script>
+{% endblock content %}

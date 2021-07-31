@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}More Info{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{url_for('static', filename='checkpage.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='deepcheck.css')}}">
+
+{% endblock %}
+
+{% block content %}
+<div class="result-container">
+    <h2 class="mb-3">ผลการตรวจสอบอย่างละเอียด</h2>
+    {% set riskinfo = result[4] %}
+    {% set risksheet = result[5] %}
+
+
+    <div class="check-bg">
+        <h5>ไฟล์ {{ result[0] }} <a class="btn btn-primary p-1 ms-4" href="/excel/{{result[0]}}">ดาวน์โหลด</a></h5>
+        <div class="customer-container {% if result[3]%}customer-danger{% else %}customer-ok{% endif %}">
+            <div class="customer">
+                <p class="fw-bold text-center">{{ result[1] }}</p>
+                <div class="status">
+                    {% if result[2]==1 %}
+                        <p>เขียน Timeline ถูกต้อง <i class="fas fa-check-square correct"></i></p>
+                    {% else %}
+                        <div class="tl-status"><p>เขียน Timeline ผิดปกติ <i class="fas fa-times-circle wrong"></i></p>
+                            {% if result[2]==2 %}
+                                <p class="reason">ข้อมูลเขต อาจมีความผิดปกติ</p>
+                            {% else %}
+                                <p class="reason">ไทม์ไลน์น้อยกว่า 10 วัน <br>ข้อมูลวันอาจมีความผิดปกติ</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    {% if result[3] %}
+                        <p>เข้าใกล้ พื้นที่เสี่ยง <i class="fas fa-exclamation-circle danger"></i></p>
+                    {% else %}
+                        <p>ปลอดภัย <i class="fas fa-thumbs-up safe"></i></p>
+                    {% endif %}
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div class="risk-info-container">
+        <div class="row">
+            <div class="col">
+                <h5 class="mb-3 text-decoration-underline">ข้อมูลการสัมผัสพื้นที่เสี่ยง</h5>
+                <div class="risk-container-1 customer-color-1">
+                    <p class="fw-bold">สัมผัสพื้นที่เสี่ยงทั้งหมด {{ result[3] }} วัน</p>
+                    {% for day in riskinfo %}
+                    <div class="risk-container-2 customer-color-2">
+                        {% set area = riskinfo[day]['พื้นที่'][0] %}
+                        <p>{{loop.index}}. {{ day }}</p>
+                        <p class="text-decoration-underline"> พื้นที่</p>
+                        <p>เขต {{ area[0] }}, จังหวัด {{ area[1] }}</p>
+                        <p class="text-decoration-underline">กิจกรรม</p>
+                        <ul>
+                            {% for act in riskinfo[day]['กิจกรรม'] %}
+                            <li>{{act}}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col">
+                <h5 class="mb-3 text-decoration-underline">พื้นที่เสี่ยงที่ตรงกับ Google Sheet</h5>
+                <div class="risk-container-1 gsheet-color-1">
+                    <p class="fw-bold">ตรงกับพื้นที่เสี่ยงทั้งหมด {{ risksheet|length }} ที่</p>
+                    {% for area in risksheet %}
+                    <div class="risk-container-2 gsheet-color-2">
+                        {% set riskarea = risksheet[area] %}
+                        <p>{{loop.index}}. เขต/อำเภอ {{area[0]}} จังหวัด {{area[1]}}</p>
+                        <table class="table table-bg">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">คลัสเตอร์</th>
+                                    <th scope="col">วันที่ปลดล็อค</th>                              
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for a in riskarea %}
+                                <tr>
+                                    <th scope="row">{{loop.index}}.</th>
+                                    <td>{{a[0]}}</td>
+                                    <td>{{a[1].strftime('%d %B %Y')}}</td>
+                                </tr>
+                                
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
